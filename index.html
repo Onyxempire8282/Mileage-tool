@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Billing Calculator</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf1SN5WPyPCQK6wTwgNKRYRHfNBfxNhFo&libraries=places"></script>
+  </head>
+  <body class="calculator">
+    <div class="calculator__container">
+      <h2 class="calculator__heading">Billing Calculator</h2>
+
+      <label for="firm" class="calculator__label">Select Firm:</label>
+      <select id="firm" class="calculator__input">
+        <option value="FirmA">AMA(50 miles free, .67/mi after)</option>
+        <option value="FirmB">A-TEAM(60 miles free, .55/mi after)</option>
+        <option value="FirmC">
+          CLAIM SOLUTION(50 miles free, .63/mi after)
+        </option>
+        <option value="FirmD">CCS(50 miles free, .65/mi after)</option>
+        <option value="FirmE">HEA(50 miles free, .60/mi after)</option>
+        <option value="FirmF">IAS(50 miles free, .65/mi after)</option>
+        <option value="FirmG">Sedgwick(60 miles free, .67/mi after)</option>
+      </select>
+
+      <label for="destination" class="calculator__label"
+        >Destination Address:</label
+      >
+      <input
+        type="text"
+        id="destination"
+        class="calculator__input"
+        placeholder="Destination"
+      />
+
+      <button class="calculator__button" onclick="calculateDistance()">
+        Get Miles
+      </button>
+      <input
+        type="number"
+        id="totalMiles"
+        class="calculator__input"
+        placeholder="e.g. 75"
+      />
+
+      <button class="calculator__button" onclick="calculateBilling()">
+        Calculate
+      </button>
+      <button class="calculator__button" onclick="copyResult()">
+        Copy Result
+      </button>
+
+      <div class="calculator__result" id="billingResult"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
