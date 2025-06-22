@@ -67,12 +67,13 @@ function calculateBilling() {
     rate = 0.67;
   }
 
-  let billableMiles = Math.max(0, miles - freeMiles);
-  let cost = billableMiles * rate;
+  const billableMiles = Math.max(0, miles - freeMiles);
+  const cost = billableMiles * rate;
 
-  const formulaText = `(${miles} (RT) - ${freeMiles} FREE) x $${rate.toFixed(
+  const formulaText = `(${miles} (RT) - ${freeMiles} FREE) = ${billableMiles} mi x $${rate.toFixed(
     2
   )} = $${cost.toFixed(2)}`;
+
   document.getElementById("billingResult").textContent = formulaText;
 }
 
