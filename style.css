@@ -58,3 +58,33 @@
   font-weight: bold;
   color: #333;
 }
+
+.calculator__route-optimerzer {
+  margin-top: 32px;
+}
+
+.calculator__map {
+  margin-top: 16px;
+  height: 400px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+.calculator__results {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.calculator__results {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+#routeResults {
+  margin-top: 16px;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.4;
+}
