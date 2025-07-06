@@ -169,16 +169,6 @@ function optimizeRoute() {
           66 + order.length
         )}: ${origin} (Home)<br><br>`;
 
-        // Alphabetical stops
-        html += "<strong>Alphabetical Stops:</strong><br>";
-        [...stops]
-          .sort((a, b) =>
-            a.localeCompare(b, undefined, { sensitivity: "base" })
-          )
-          .forEach((addr, i) => {
-            html += `${String.fromCharCode(65 + i)}: ${addr}<br>`;
-          });
-
         // Totals
         html += `<br><strong>Total Distance:</strong> ${miles} miles<br>`;
         html += `<strong>Estimated Time:</strong> ${hrs} hr ${mins} min`;
