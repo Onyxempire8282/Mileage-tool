@@ -3,124 +3,159 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Billing & Route Optimizer</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Claim Cipher</title>
+    <meta name="description" content="Billing Calculator and Route Optimizer" />
+    <meta
+      name="keywords"
+      content="claim cipher, claim, cipher, adjuster, billing, calculator, route optimizer, mileage, distance, Google Maps API"
+    />
+    <meta name="author" content="Vernon Long" />
+    <link rel="stylesheet" href="./pages/index.css" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR51CGOXEyVz8Dy-6hU7kdaqbq8-CTkBs&libraries=places"></script>
   </head>
-  <body class="calculator">
-    <div class="calculator__container">
-      <h2 class="calculator__heading">Billing Calculator</h2>
-
-      <label for="firm" class="calculator__label">Select Firm:</label>
-      <select id="firm" class="calculator__input">
-        <option value="FirmA">AMA(50 miles free, .67/mi after)</option>
-        <option value="FirmB">A-TEAM(60 miles free, .55/mi after)</option>
-        <option value="FirmC">
-          CLAIM SOLUTION(50 miles free, .63/mi after)
-        </option>
-        <option value="FirmD">CCS(50 miles free, .65/mi after)</option>
-        <option value="FirmE">HEA(50 miles free, .60/mi after)</option>
-        <option value="FirmF">IAS(50 miles free, .65/mi after)</option>
-        <option value="FirmG">Sedgwick(60 miles free, .67/mi after)</option>
-      </select>
-
-      <label for="destination" class="calculator__label"
-        >Destination Address:</label
-      >
-      <input
-        type="text"
-        id="destination"
-        class="calculator__input"
-        placeholder="Destination"
-      />
-
-      <button class="calculator__button" onclick="calculateDistance()">
-        Get Miles
-      </button>
-      <input
-        type="number"
-        id="totalMiles"
-        class="calculator__input"
-        placeholder="e.g. 75"
-      />
-
-      <button class="calculator__button" onclick="calculateBilling()">
-        Calculate
-      </button>
-      <button class="calculator__button" onclick="copyResult()">
-        Copy Result
-      </button>
-
-      <div class="calculator__result" id="billingResult"></div>
-    </div>
-    <div class="route-optimizer class=calculator__route-optimizer">
-      <h2 class="calculator__title">Route Optimizer</h2>
-      <label for="origin" class="calculator__label">Starting Address:</label>
-      <input
-        type="text"
-        id="origin"
-        class="calculator__input"
-        placeholder="Your home address"
-      />
-      <label for="stops" class="calculator__label"> One per line: </label>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State"
-      ></textarea>
-      <textarea
-        class="calculator__input stops"
-        rows="10"
-        placeholder="123 Main St, City, State "
-      ></textarea>
-
-      <button class="calculator__button" onclick="optimizeRoute()">
-        Optimize Route
-      </button>
-      <div id="map" class="calculator__map"></div>
-      <div id="routeResults" class="calculator__results"></div>
-    </div>
-
+  <body class="claim-cipher">
+    <header class="claim-cipher__header">
+      <div class="claim-cipher__logo"></div>
+      <nav class="claim-cipher__nav">
+        <button
+          class="claim-cipher__nav-link"
+          onclick="showSection('calculator')"
+        >
+          Mileage
+        </button>
+        <button class="claim-cipher__nav-link" onclick="showSection('router')">
+          Router
+        </button>
+        <button
+          class="claim-cipher__nav-link"
+          onclick="showSection('totalLoss')"
+        >
+          Total Loss
+        </button>
+        <button class="claim-cipher__nav-link" onclick="showSection('about')">
+          About
+        </button>
+      </nav>
+    </header>
+    <main class="claim-cipher__main">
+      <div class="claim-cipher__content">
+        <section class="claim-cipher__calculator">
+          <h2 class="claim-cipher__heading">Billing Calculator</h2>
+          <label for="firm" class="claim-cipher__label">Select Firm:</label>
+          <select id="firm" class="claim-cipher__input">
+            <option value="FirmA">AMA(50 miles free, .67/mi after)</option>
+            <option value="FirmB">A-TEAM(60 miles free, .55/mi after)</option>
+            <option value="FirmC">
+              CLAIM SOLUTION(50 miles free, .63/mi after)
+            </option>
+            <option value="FirmD">CCS(50 miles free, .65/mi after)</option>
+            <option value="FirmE">HEA(50 miles free, .60/mi after)</option>
+            <option value="FirmF">IAS(50 miles free, .65/mi after)</option>
+            <option value="FirmG">Sedgwick(60 miles free, .67/mi after)</option>
+          </select>
+          <label for="destination" class="claim-cipher__label"
+            >Destination Address:</label
+          >
+          <input
+            type="text"
+            id="destination"
+            class="claim-cipher__input"
+            placeholder="Destination"
+          />
+          <button class="claim-cipher__button" onclick="calculateDistance()">
+            Get Miles
+          </button>
+          <input
+            type="number"
+            id="totalMiles"
+            class="claim-cipher__input"
+            placeholder="e.g. 75"
+          />
+          <button class="claim-cipher__button" onclick="calculateBilling()">
+            Calculate
+          </button>
+          <button class="claim-cipher__button" onclick="copyResult()">
+            Copy Result
+          </button>
+          <div class="claim-cipher__result" id="billingResult"></div>
+        </section>
+        <!-- Route Optimizer Section -->
+        <section class="claim-cipher__route-optimizer">
+          <h2 class="claim-cipher__heading">Route Optimizer</h2>
+          <div class="claim-cipher__route-layout">
+            <div class="claim-cipher__route-inputs">
+              <label for="origin" class="claim-cipher__label"
+                >Starting Address:</label
+              >
+              <input
+                type="text"
+                id="origin"
+                class="claim-cipher__input"
+                placeholder="Your home address"
+              />
+              <label class="claim-cipher__label">Stops (up to 10):</label>
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 1"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 2"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 3"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 4"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 5"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 6"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 7"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 8"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 9"
+              />
+              <input
+                type="text"
+                class="claim-cipher__input claim-cipher__stop"
+                placeholder="Stop 10"
+              />
+              <button class="claim-cipher__button" onclick="optimizeRoute()">
+                Optimize Route
+              </button>
+            </div>
+            <div class="claim-cipher__route-map">
+              <div id="map" class="claim-cipher__map"></div>
+              <div id="routeResults" class="claim-cipher__results"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
     <script src="script.js"></script>
   </body>
 </html>

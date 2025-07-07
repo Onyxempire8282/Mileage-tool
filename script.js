@@ -9,7 +9,13 @@ function initServices() {
   directionsRenderer = new google.maps.DirectionsRenderer();
   geocoder = new google.maps.Geocoder();
 
-  // Attach renderer to map later when map exists
+  // Show the whole USA by default
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 4, // Zoomed out to show most of the US
+    center: { lat: 39.8283, lng: -98.5795 }, // Geographic center of the contiguous US
+  });
+  directionsRenderer.setMap(map);
+
   // Autocomplete for starting address
   new google.maps.places.Autocomplete(document.getElementById("origin"), {
     types: ["address"],
@@ -105,14 +111,24 @@ function copyResult() {
 
 function optimizeRoute() {
   const origin = document.getElementById("origin").value.trim();
-  const stops = Array.from(document.querySelectorAll(".stops"))
-    .map((el) => el.value.trim())
-    .filter(Boolean);
+  const stopInputs = document.querySelectorAll(".claim-cipher__stop");
+  const stops = Array.from(stopInputs)
+    .map((input) => input.value.trim())
+    .filter((val) => val.length > 0);
 
-  if (!origin) return alert("Please enter your starting address.");
-  if (stops.length === 0) return alert("Please enter at least one stop.");
+  console.log("Origin:", origin);
+  console.log("Stops:", stops);
 
-  // Initialize map once
+  if (!origin) {
+    alert("Please enter your starting address.");
+    return;
+  }
+  if (stops.length === 0) {
+    alert("Please enter at least one stop.");
+    return;
+  }
+
+  // Initialize map if needed
   if (!map) {
     map = new google.maps.Map(document.getElementById("map"), {
       zoom: 8,
@@ -160,14 +176,23 @@ function optimizeRoute() {
 
         // Optimized order display
         const order = res.routes[0].waypoint_order;
+        const legs = res.routes[0].legs;
         let html = "<strong>Optimized Route:</strong><br>";
-        html += `A: ${origin} (Home)<br>`;
+
+        // Start address (home)
+        html += `A: ${legs[0].start_address} (Home)<br>`;
+
+        // Waypoints in optimized order
         order.forEach((idx, i) => {
-          html += `${String.fromCharCode(66 + i)}: ${stops[idx]}<br>`;
+          html += `${String.fromCharCode(66 + i)}: ${
+            legs[idx + 1].start_address
+          }<br>`;
         });
-        html += `${String.fromCharCode(
-          66 + order.length
-        )}: ${origin} (Home)<br><br>`;
+
+        // End address (home, should match start)
+        html += `${String.fromCharCode(66 + order.length)}: ${
+          legs[legs.length - 1].end_address
+        } (Home)<br><br>`;
 
         // Totals
         html += `<br><strong>Total Distance:</strong> ${miles} miles<br>`;

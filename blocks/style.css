@@ -1,0 +1,62 @@
+.claim-cipher__main {
+  display: flex;
+  flex-direction: column;
+  background-color: lightsteelblue;
+  background-image: ;
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.claim-cipher__content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 3rem;
+  padding: 3rem 2rem;
+}
+
+.claim-cipher__calculator {
+  border-radius: 18px;
+  padding: 2.5rem 2rem;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claim-cipher__route-optimizer {
+  border-radius: 18px;
+  padding: 2.5rem 2rem;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claim-cipher__route-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.claim-cipher__route-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claim-cipher__route-map {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.claim-cipher__map {
+  width: 100%;
+  height: 400px;
+  border-radius: 12px;
+  background-color: white;
+}
+
+/* ...rest of your styles... */
