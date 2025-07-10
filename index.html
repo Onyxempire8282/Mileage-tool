@@ -11,11 +11,16 @@
     />
     <meta name="author" content="Vernon Long" />
     <link rel="stylesheet" href="./pages/index.css" />
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR51CGOXEyVz8Dy-6hU7kdaqbq8-CTkBs&libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDR51CGOXEyVz8Dy-6hU7kdaqbq8-CTkBs&libraries=places&callback=initServices" async defer></script>
   </head>
   <body class="claim-cipher">
     <header class="claim-cipher__header">
-      <div class="claim-cipher__logo"></div>
+      <div class="claim-cipher__title">
+        <h1 class="claim-cipher__heading">Claim Cipher</h1>
+      </div>
+      <div class="flav8r__logo">
+        <img src="./assets/logo.png" alt="flav8r Logo" />
+      </div>
       <nav class="claim-cipher__nav">
         <button
           class="claim-cipher__nav-link"
@@ -79,7 +84,7 @@
           </button>
           <div class="claim-cipher__result" id="billingResult"></div>
         </section>
-        <!-- Route Optimizer Section -->
+        
         <section class="claim-cipher__route-optimizer">
           <h2 class="claim-cipher__heading">Route Optimizer</h2>
           <div class="claim-cipher__route-layout">

@@ -1,34 +1,33 @@
 const ORIGIN = "715 SANDHILL DR, DUDLEY, NC 28333";
-// script.js
 
 let map, directionsService, directionsRenderer, geocoder, homeMarker;
 
-// Initialize Maps services & Autocomplete
 function initServices() {
+  console.log("Initializing Maps...");
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer();
   geocoder = new google.maps.Geocoder();
 
-  // Show the whole USA by default
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 4, // Zoomed out to show most of the US
-    center: { lat: 39.8283, lng: -98.5795 }, // Geographic center of the contiguous US
+    zoom: 4,
+    center: { lat: 39.8283, lng: -98.5795 },
   });
+
   directionsRenderer.setMap(map);
 
-  // Autocomplete for starting address
   new google.maps.places.Autocomplete(document.getElementById("origin"), {
     types: ["address"],
   });
 }
+
 window.onload = initServices;
 
 function calculateDistance() {
+  console.log("Calculate Distance clicked!");
   const destination = document.getElementById("destination").value;
 
   const resultDiv = document.getElementById("billingResult");
-  resultDiv.innerHTML =
-    "<span class='calculator__spinner'></span> Calculating mileage...";
+  resultDiv.innerHTML = "Calculating...";
 
   const service = new google.maps.DistanceMatrixService();
   service.getDistanceMatrix(
@@ -40,106 +39,47 @@ function calculateDistance() {
     },
     (response, status) => {
       if (status === "OK") {
-        const distanceText = response.rows[0].elements[0].distance.text;
-        const distanceValue = parseFloat(distanceText.replace(/[^0-9.]/g, ""));
-        const roundTripMiles = distanceValue * 2; // round trip
-        document.getElementById("totalMiles").value = roundTripMiles;
-
-        calculateBilling(); //Automatically trigger billing after miles are retreived")
+        const dist = parseFloat(response.rows[0].elements[0].distance.text.replace(/[^0-9.]/g, ""));
+        const roundTrip = dist * 2;
+        document.getElementById("totalMiles").value = roundTrip.toFixed(2);
+        calculateBilling();
       } else {
-        alert("Error getting distance: " + status);
+        alert("Distance error: " + status);
       }
     }
   );
 }
 
 function calculateBilling() {
+  console.log("Calculate Billing clicked!");
   const firm = document.getElementById("firm").value;
   const miles = parseFloat(document.getElementById("totalMiles").value);
-
   if (isNaN(miles)) {
-    alert(
-      "Please click 'Get Miles' and wait for the distance to load before calculating."
-    );
+    alert("No miles yet!");
     return;
   }
-
-  let freeMiles = 0;
-  let rate = 0;
-
-  if (firm === "FirmA") {
-    freeMiles = 50;
-    rate = 0.67;
-  } else if (firm === "FirmB") {
-    freeMiles = 60;
-    rate = 0.55;
-  } else if (firm === "FirmC") {
-    freeMiles = 50;
-    rate = 0.63;
-  } else if (firm === "FirmD") {
-    freeMiles = 50;
-    rate = 0.65;
-  } else if (firm === "FirmE") {
-    freeMiles = 50;
-    rate = 0.6;
-  } else if (firm === "FirmF") {
-    freeMiles = 50;
-    rate = 0.65;
-  } else if (firm === "FirmG") {
-    freeMiles = 60;
-    rate = 0.67;
-  }
-
-  const billableMiles = Math.max(0, miles - freeMiles);
-  const cost = billableMiles * rate;
-
-  const formulaText = `(${miles} (RT) - ${freeMiles} FREE) = ${billableMiles} mi x $${rate.toFixed(
-    2
-  )} = $${cost.toFixed(2)}`;
-
-  document.getElementById("billingResult").textContent = formulaText;
+  let freeMiles = 50, rate = 0.6;
+  if (firm === "FirmA") { freeMiles = 50; rate = 0.67; }
+  const billable = Math.max(0, miles - freeMiles);
+  const cost = billable * rate;
+  document.getElementById("billingResult").textContent =
+    `(${miles} RT - ${freeMiles} Free) = ${billable} mi x $${rate} = $${cost.toFixed(2)}`;
 }
 
-function copyResult() {
-  const result = document.getElementById("billingResult").textContent;
-  navigator.clipboard.writeText(result).then(() => {
-    alert("Result copied to clipboard!");
-  });
-}
-
-// --- New: Route optimization with home icon & alphabetical listing ---
 
 function optimizeRoute() {
+  console.log("Optimize Route clicked!");
   const origin = document.getElementById("origin").value.trim();
-  const stopInputs = document.querySelectorAll(".claim-cipher__stop");
-  const stops = Array.from(stopInputs)
-    .map((input) => input.value.trim())
-    .filter((val) => val.length > 0);
+  const stops = Array.from(document.querySelectorAll(".claim-cipher__stop"))
+    .map(input => input.value.trim()).filter(Boolean);
 
-  console.log("Origin:", origin);
-  console.log("Stops:", stops);
-
-  if (!origin) {
-    alert("Please enter your starting address.");
-    return;
-  }
-  if (stops.length === 0) {
-    alert("Please enter at least one stop.");
+  if (!origin || stops.length === 0) {
+    alert("Missing stops or origin!");
     return;
   }
 
-  // Initialize map if needed
-  if (!map) {
-    map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 8,
-      center: { lat: 35.3336, lng: -77.9946 },
-    });
-    directionsRenderer.setMap(map);
-  }
-
-  // Geocode origin & place house icon
   geocoder.geocode({ address: origin }, (results, status) => {
-    if (status !== "OK") return alert("Could not locate origin: " + status);
+    if (status !== "OK") return alert("Origin error: " + status);
     const loc = results[0].geometry.location;
     map.setCenter(loc);
     if (homeMarker) homeMarker.setMap(null);
@@ -149,57 +89,88 @@ function optimizeRoute() {
       icon: "https://maps.google.com/mapfiles/kml/shapes/homegardenbusiness.png",
     });
 
-    // Build and send directions request
-    const waypoints = stops.map((addr) => ({ location: addr, stopover: true }));
+    const waypoints = stops.map(addr => ({ location: addr, stopover: true }));
     directionsService.route(
       {
-        origin,
-        destination: origin,
-        waypoints,
-        optimizeWaypoints: true,
-        travelMode: "DRIVING",
+        origin, destination: origin, waypoints,
+        optimizeWaypoints: true, travelMode: "DRIVING"
       },
       (res, status) => {
-        if (status !== "OK") return alert("Directions error: " + status);
+        if (status !== "OK") return alert("Route error: " + status);
         directionsRenderer.setDirections(res);
 
-        // Sum distance & duration
-        let totalDist = 0,
-          totalDur = 0;
-        res.routes[0].legs.forEach((leg) => {
-          totalDist += leg.distance.value;
-          totalDur += leg.duration.value;
-        });
-        const miles = (totalDist / 1609.344).toFixed(2);
-        const hrs = Math.floor(totalDur / 3600);
-        const mins = Math.round((totalDur % 3600) / 60);
-
-        // Optimized order display
-        const order = res.routes[0].waypoint_order;
+        // --- Show time between each stop ---
         const legs = res.routes[0].legs;
-        let html = "<strong>Optimized Route:</strong><br>";
-
-        // Start address (home)
-        html += `A: ${legs[0].start_address} (Home)<br>`;
-
-        // Waypoints in optimized order
-        order.forEach((idx, i) => {
-          html += `${String.fromCharCode(66 + i)}: ${
-            legs[idx + 1].start_address
-          }<br>`;
-        });
-
-        // End address (home, should match start)
-        html += `${String.fromCharCode(66 + order.length)}: ${
-          legs[legs.length - 1].end_address
-        } (Home)<br><br>`;
-
-        // Totals
-        html += `<br><strong>Total Distance:</strong> ${miles} miles<br>`;
-        html += `<strong>Estimated Time:</strong> ${hrs} hr ${mins} min`;
-
+        let html = '<h3>Route Details</h3>';
+        html += '<table border="1" style="border-collapse:collapse;"><tr><th>From</th><th>To</th><th>Distance</th><th>Duration</th></tr>';
+        for (let i = 0; i < legs.length; i++) {
+          html += `<tr><td>${legs[i].start_address}</td><td>${legs[i].end_address}</td><td>${legs[i].distance.text}</td><td>${legs[i].duration.text}</td></tr>`;
+        }
+        html += '</table>';
         document.getElementById("routeResults").innerHTML = html;
+
+        // --- Add schedule table below ---
+        addScheduleTable(stops, origin);
       }
     );
   });
+}
+
+// Helper to add a Mon-Fri, 8am-5pm schedule table with dropdowns
+function addScheduleTable(stops, origin) {
+  // Time slots: 8am to 5pm (10 slots)
+  const times = Array.from({length: 10}, (_, i) => `${8 + i}:00`);
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  // Example firm list
+  let firms = ["Sedgwick", "FirmB", "FirmC", "Add New..."];
+
+  let table = '<h3>Weekly Schedule</h3>';
+  table += '<button id="downloadSchedule">Download Table (CSV)</button>';
+  table += '<table border="1" style="border-collapse:collapse;"><tr><th>Time</th>';
+  for (const day of days) table += `<th>${day}</th>`;
+  table += '</tr>';
+  for (const time of times) {
+    table += `<tr><td>${time}</td>`;
+    for (let d = 0; d < days.length; d++) {
+      table += '<td>';
+      // Address dropdown
+      table += '<select class="schedule-address">';
+      table += `<option value="">--Address--</option>`;
+      [origin, ...stops].forEach(addr => table += `<option value="${addr}">${addr}</option>`);
+      table += '</select><br>';
+      // Confirmed dropdown
+      table += '<select class="schedule-confirmed"><option value="">Confirmed?</option><option>Yes</option><option>No</option></select><br>';
+      // Scheduled dropdown
+      table += '<select class="schedule-sched"><option value="">Scheduled?</option><option>Yes</option><option>No</option></select><br>';
+      // Firm dropdown
+      table += '<select class="schedule-firm">';
+      firms.forEach(firm => table += `<option value="${firm}">${firm}</option>`);
+      table += '</select>';
+      table += '</td>';
+    }
+    table += '</tr>';
+  }
+  table += '</table>';
+  document.getElementById("routeResults").innerHTML += table;
+
+  // Add download functionality
+  document.getElementById("downloadSchedule").onclick = function() {
+    let csv = [
+      ["Time", ...days.map(d => [d+" Address", d+" Confirmed", d+" Scheduled", d+" Firm"]).flat()].join(",")
+    ];
+    const rows = document.querySelectorAll("#routeResults table")[1].rows;
+    for (let i = 1; i < rows.length; i++) {
+      let row = [rows[i].cells[0].textContent];
+      for (let j = 1; j < rows[i].cells.length; j++) {
+        const selects = rows[i].cells[j].querySelectorAll("select");
+        row.push(selects[0]?.value || "", selects[1]?.value || "", selects[2]?.value || "", selects[3]?.value || "");
+      }
+      csv.push(row.join(","));
+    }
+    const blob = new Blob([csv.join("\n")], {type: "text/csv"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "schedule.csv";
+    link.click();
+  };
 }
