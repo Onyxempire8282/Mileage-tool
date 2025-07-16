@@ -59,11 +59,36 @@ function calculateBilling() {
     return;
   }
   let freeMiles = 50, rate = 0.6;
-  if (firm === "FirmA") { freeMiles = 50; rate = 0.67; }
+  switch (firm) {
+    case "FirmA": // AMA
+      freeMiles = 50; rate = 0.67; break;
+    case "FirmB": // A-TEAM
+      freeMiles = 60; rate = 0.55; break;
+    case "FirmC": // CLAIM SOLUTION
+      freeMiles = 50; rate = 0.63; break;
+    case "FirmD": // CCS
+      freeMiles = 50; rate = 0.65; break;
+    case "FirmE": // HEA
+      freeMiles = 50; rate = 0.60; break;
+    case "FirmF": // IAS
+      freeMiles = 50; rate = 0.65; break;
+    case "FirmG": // Sedgwick
+      freeMiles = 60; rate = 0.67; break;
+    // Add more cases as needed
+  }
+
+  function copyResult() {
+  const result = document.getElementById("billingResult").textContent;
+  if (!result) {
+    alert("Nothing to copy!");
+    return;
+  }
+  navigator.clipboard.writeText(result)
+    .then(() => alert("Result copied!"))
+    .catch(() => alert("Copy failed!"));
+}
   const billable = Math.max(0, miles - freeMiles);
   const cost = billable * rate;
   document.getElementById("billingResult").textContent =
     `(${miles} RT - ${freeMiles} Free) = ${billable} mi x $${rate} = $${cost.toFixed(2)}`;
 }
-
-
